@@ -2,7 +2,7 @@
   "name": "eslint-disable-rule",
   "displayName": "Eslint Disable Rule",
   "description": "VSCode extension for disabling eslint rules",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "alvaro-magu",
   "repository": {
     "type": "git",
