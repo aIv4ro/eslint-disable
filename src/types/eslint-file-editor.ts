@@ -1,4 +1,4 @@
-import { EslintFile } from "./eslint-file";
+import { EslintFile } from "./eslint-file"
 
 export interface EslintFileEditor {
   supressRule ({
