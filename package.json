@@ -3,6 +3,10 @@
   "displayName": "eslint-disable",
   "description": "VSCode extension for disabling eslint rules",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aIv4ro/eslint-disable"
+  },
   "engines": {
     "vscode": "^1.86.0"
   },
