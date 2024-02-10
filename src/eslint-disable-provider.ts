@@ -1,6 +1,10 @@
 import * as vscode from 'vscode';
 import { findEslintFile, getEslintFileEditor } from './utils';
 
+type TextDoc = vscode.TextDocument;
+type Range = vscode.Range;
+type Selection = vscode.Selection;
+
 export class EslintDisableProvider implements vscode.CodeActionProvider<vscode.CodeAction> {
   static commandId = 'eslint-disable.disable';
   private command!: vscode.Disposable;
@@ -8,27 +12,25 @@ export class EslintDisableProvider implements vscode.CodeActionProvider<vscode.C
   activate (context: vscode.ExtensionContext) {
     this.command = vscode.commands.registerCommand(EslintDisableProvider.commandId, this.run, this);
     context.subscriptions.push(this.command);
-    vscode.languages.registerCodeActionsProvider({ pattern: '**/*.{ts,js,tsx,jsx}' }, this);
+    vscode.languages.registerCodeActionsProvider({ pattern: '**/*.{ts,js,tsx,jsx}' }, this, {providedCodeActionKinds: [vscode.CodeActionKind.QuickFix]});
   }
 
-  provideCodeActions(document: vscode.TextDocument, _: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-    console.log(context.diagnostics);
-    const actions = context.diagnostics
+  provideCodeActions(_: TextDoc, __: Range | Selection, context: vscode.CodeActionContext): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
+    return context.diagnostics
       .filter(diagnostic => diagnostic.source === 'eslint')
       .map<vscode.CodeAction | vscode.Command>(diagnostic => {
-        const rule = typeof diagnostic.code === 'object' ? diagnostic.code.value : diagnostic.code;
-        return {
-          title: `Disable eslint rule (${rule})`,
+        const ruleId = typeof diagnostic.code === 'object' ? String(diagnostic.code.value) : String(diagnostic.code);
+        const action = new vscode.CodeAction(`Disable eslint rule (${ruleId})`, vscode.CodeActionKind.QuickFix);
+        action.command = {
+          title: action.title,
           command: EslintDisableProvider.commandId,
-          arguments: [document, diagnostic],
-          kind: vscode.CodeActionKind.QuickFix.append('disable.rule')
+          arguments: [ruleId]
         };
+        return action;
       });
-    return actions;
   }
 
-  private async run (document: vscode.TextDocument, diagnostic: vscode.Diagnostic) {
-    const ruleId = typeof diagnostic.code === 'object' ? String(diagnostic.code.value) : String(diagnostic.code);
+  private async run (ruleId: string) {
     const configFile = await findEslintFile();
     if (configFile === null) {
       return;

@@ -16,3 +16,6 @@ It requires the `eslint` package installed in your project because it uses the `
 
 ### 0.0.1
 - add .eslintrc.json extension support
+
+### 0.0.2
+- show code action in quick fixes group
