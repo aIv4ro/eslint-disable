@@ -32,10 +32,17 @@ export class EslintDisableProvider implements vscode.CodeActionProvider<vscode.C
 
   private async run (ruleId: string) {
     const configFile = await findEslintFile()
-    if (configFile === null) {
+    if (configFile == null) {
+      vscode.window.showErrorMessage('Eslint config file not found. Please make sure you have a .eslintrc file in your workspace.')
       return
     }
+
     const eslintFileEditor = getEslintFileEditor(configFile)
+    if (eslintFileEditor == null) {
+      vscode.window.showErrorMessage('Eslint file extension not supported. Please use .json or some supported js extension.')
+      return
+    }
+
     await eslintFileEditor.supressRule({ rule: ruleId, file: configFile })
   }
 }
