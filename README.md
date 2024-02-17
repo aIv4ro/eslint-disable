@@ -10,7 +10,7 @@ It requires the `eslint` package installed in your project because it uses the `
 
 ## Known Issues
 
-- not working with `.eslintrc.js` files
+- I have experimented some issues with js extension if type module is enabled in the `package.json` file.
 
 ## Release Notes
 
